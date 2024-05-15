@@ -1,0 +1,86 @@
+/* Keep labels and inputs on the same line */
+/* input::after {
+    content: "asdfkdjf";
+} */
+
+body {
+    background: #323232;
+    color: white;
+    font-family: sans-serif;
+    font-weight: 300;
+    font-size: 120%;
+    text-rendering: optimizeLegibility;
+    line-height: 1.7;
+}
+
+#app {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: stretch;
+    align-items: stretch;
+    gap: 1rem;
+}
+
+h1 {
+    font-size: 150%;
+    text-align: center;
+    margin: 0;
+}
+
+fieldset,
+legend,
+canvas {
+    background: #585858;
+}
+
+legend {
+    font-weight: 700;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+fieldset {
+    margin-top: 1rem;
+    border: none;
+}
+
+label::after {
+    content: ":";
+}
+
+:is(summary, input[type="checkbox"]):hover {
+    cursor: pointer;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0.5rem;
+    background: #323232;
+}
+
+li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* border-bottom: 1px solid white; */
+}
+
+input {
+    margin-left: 1rem;
+    width: 8rem;
+    text-align: right;
+    direction: rtl;
+    font-size: inherit;
+    color: inherit;
+    background: inherit;
+    border: 1px solid white;
+}
+
+canvas {
+    color: white;
+    background:;
+}
