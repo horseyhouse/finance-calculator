@@ -165,6 +165,7 @@ const chronologicalData = computed(() => {
     const personalLoanBalance = [];
     const personalLoanMonthlyPayment = [];
     const individualMonthlyPayment = [];
+    let totalLoanPayment = 0.0;
 
     let balance = principal;
     let monthlyPayment = startingMonthlyPersonalLoanPayment.value;
@@ -179,12 +180,18 @@ const chronologicalData = computed(() => {
         individualMonthlyPayment.push(
             loanToIndividualMonthlyPayment(monthlyPayment, i),
         );
+        totalLoanPayment += monthlyPayment;
     }
     return {
         personalLoanBalance,
         personalLoanMonthlyPayment,
         individualMonthlyPayment,
+        totalLoanPayment
     };
+});
+
+const totalLoanPayment = computed(() => {
+    return chronologicalData.value.totalLoanPayment;
 });
 
 const chartData = computed(() => {
@@ -271,6 +278,16 @@ const chartData = computed(() => {
                         v-model="personalLoanParams.principal"
                         step="10000"
                     />
+                </li>
+                <li>
+                    <label for="totalLoan"
+                        >Total Loan Payed (including interest and inflation)
+                    </label>
+                    <text>
+                        ${{
+                        totalLoanPayment.toFixed(2)
+                    }}
+                    </text>
                 </li>
                 <li>
                     <label for="loanInterest">Yearly Interest</label>
