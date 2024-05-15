@@ -112,7 +112,7 @@ const startingMonthlyPersonalLoanPayment = computed(() => {
         interest,
         numYears,
     );
-    let startingMonthlyPaymentLow = 0;
+    let startingMonthlyPaymentLow = null;
     let startingMonthlyPaymentHigh = null; // null means unbounded
 
     for (let j = 0; j < 100; j++) {
@@ -131,19 +131,22 @@ const startingMonthlyPersonalLoanPayment = computed(() => {
         }
 
         if (balance > 0) {
+            startingMonthlyPaymentLow = startingMonthlyPaymentMid;
             if (startingMonthlyPaymentHigh === null) {
-                startingMonthlyPaymentLow = startingMonthlyPaymentMid;
                 startingMonthlyPaymentMid *= 2;
             } else {
-                startingMonthlyPaymentLow = startingMonthlyPaymentMid;
                 startingMonthlyPaymentMid =
                     (startingMonthlyPaymentMid + startingMonthlyPaymentHigh) /
                     2;
             }
         } else {
             startingMonthlyPaymentHigh = startingMonthlyPaymentMid;
-            startingMonthlyPaymentMid =
-                (startingMonthlyPaymentMid + startingMonthlyPaymentLow) / 2;
+            if (startingMonthlyPaymentLow === null) {
+                startingMonthlyPaymentMid -= 100;
+            } else {
+                startingMonthlyPaymentMid =
+                    (startingMonthlyPaymentMid + startingMonthlyPaymentLow) / 2;
+            }
         }
     }
     return NaN;
@@ -343,8 +346,7 @@ const chartData = computed(() => {
             <summary>
                 Initial Personal Loan Monthly Payment:
                 <template v-if="isNaN(startingMonthlyPersonalLoanPayment)">
-                    Could not be computed. Perhaps inflation rate set too
-                    aggressively?
+                    Could not be computed.
                 </template>
                 <template v-else>
                     <strong
