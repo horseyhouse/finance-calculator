@@ -170,6 +170,7 @@ const chronologicalData = computed(() => {
     const personalLoanMonthlyPayment = [];
     const individualMonthlyPayment = [];
     let totalLoanPayment = 0.0;
+    let totalLoanPaymentInflationAdjusted = 0.0;
 
     let balance = principal;
     let monthlyPayment = startingMonthlyPersonalLoanPayment.value;
@@ -185,17 +186,17 @@ const chronologicalData = computed(() => {
             loanToIndividualMonthlyPayment(monthlyPayment, i),
         );
         totalLoanPayment += monthlyPayment;
+        totalLoanPaymentInflationAdjusted +=
+            monthlyPayment *
+            Math.pow(1 + personalLoanParams.inflationRate / 100, -i / 12);
     }
     return {
         personalLoanBalance,
         personalLoanMonthlyPayment,
         individualMonthlyPayment,
         totalLoanPayment,
+        totalLoanPaymentInflationAdjusted,
     };
-});
-
-const totalLoanPayment = computed(() => {
-    return chronologicalData.value.totalLoanPayment;
 });
 
 const chartData = computed(() => {
@@ -284,12 +285,6 @@ const chartData = computed(() => {
                     />
                 </li>
                 <li>
-                    <label for="totalLoan"
-                        >Total Loan Payed (including interest and inflation)
-                    </label>
-                    <text> ${{ totalLoanPayment.toFixed(2) }} </text>
-                </li>
-                <li>
                     <label for="loanInterest">Yearly Interest</label>
                     <input
                         id="loanInterest"
@@ -328,15 +323,37 @@ const chartData = computed(() => {
                         v-model="personalLoanParams.inflateWithMortgagePayment"
                     />
                 </li>
+                <li>
+                    <label>Total Amount Payed</label>
+                    <span>
+                        ${{ chronologicalData.totalLoanPayment.toFixed(2) }}
+                    </span>
+                </li>
+                <li>
+                    <label>Total Amount Payed (inflation adjusted)</label>
+                    <span>
+                        ${{
+                            chronologicalData.totalLoanPaymentInflationAdjusted.toFixed(
+                                2,
+                            )
+                        }}
+                    </span>
+                </li>
             </ul>
             <summary>
                 Initial Personal Loan Monthly Payment:
-                <strong
-                    >${{
-                        startingMonthlyPersonalLoanPayment.toFixed(2)
-                    }}</strong
-                >
-                <em> (click to expand) </em>
+                <template v-if="isNaN(startingMonthlyPersonalLoanPayment)">
+                    Could not be computed. Perhaps inflation rate set too
+                    aggressively?
+                </template>
+                <template v-else>
+                    <strong
+                        >${{
+                            startingMonthlyPersonalLoanPayment.toFixed(2)
+                        }}</strong
+                    >
+                    <em> (click to expand) </em>
+                </template>
             </summary>
         </details>
     </fieldset>
