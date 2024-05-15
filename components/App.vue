@@ -64,12 +64,16 @@ const houseParams = reactive({
 });
 
 function monthlyLoanPayment(principal, interest, numYears) {
-    const monthlyInterestRate = interest / 100 / 12;
-    const numberOfPayments = numYears * 12;
-    return (
-        (principal * monthlyInterestRate) /
-        (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments))
-    );
+    if (interest <= 0) {
+        return principal / (numYears * 12);
+    } else {
+        const monthlyInterestRate = interest / 100 / 12;
+        const numberOfPayments = numYears * 12;
+        return (
+            (principal * monthlyInterestRate) /
+            (1 - Math.pow(1 + monthlyInterestRate, -numberOfPayments))
+        );
+    }
 }
 
 const monthlyMortgagePayment = computed(() => {
@@ -142,7 +146,7 @@ const startingMonthlyPersonalLoanPayment = computed(() => {
                 (startingMonthlyPaymentMid + startingMonthlyPaymentLow) / 2;
         }
     }
-    return startingMonthlyPaymentMid;
+    return NaN;
 });
 
 function loanToIndividualMonthlyPayment(personalLoanMonthlyPayment, month) {
@@ -186,7 +190,7 @@ const chronologicalData = computed(() => {
         personalLoanBalance,
         personalLoanMonthlyPayment,
         individualMonthlyPayment,
-        totalLoanPayment
+        totalLoanPayment,
     };
 });
 
@@ -283,11 +287,7 @@ const chartData = computed(() => {
                     <label for="totalLoan"
                         >Total Loan Payed (including interest and inflation)
                     </label>
-                    <text>
-                        ${{
-                        totalLoanPayment.toFixed(2)
-                    }}
-                    </text>
+                    <text> ${{ totalLoanPayment.toFixed(2) }} </text>
                 </li>
                 <li>
                     <label for="loanInterest">Yearly Interest</label>
